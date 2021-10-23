@@ -113,5 +113,5 @@ Para instalar requerimientos y entrenar, correr: source 20211015_tensorflowDeepl
 
 Para usar CRF, correr: python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt
 
-# Otros datos
+### Otros datos
 Se usó en python de anaconda (no sé si será relevante)
