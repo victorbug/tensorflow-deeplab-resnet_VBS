@@ -106,6 +106,9 @@ At the moment, the post-processing step with CRF is not implemented. Besides tha
 
 ## Victor
 Descargar el kit desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
+
 Descargar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
+
 Para entrenar, correr: source 20211015_tensorflowDeeplabResnet_CRF.sh
+
 Para usar CRF, correr: python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt
