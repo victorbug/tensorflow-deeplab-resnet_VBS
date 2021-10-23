@@ -109,9 +109,15 @@ Descargar el kit de imágenes y anotaciones desde: https://www.kaggle.com/lyuxin
 
 Descargar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
 
-Para instalar requerimientos y entrenar, correr: source 20211015_tensorflowDeeplabResnet_CRF.sh
+Para instalar requerimientos y entrenar, correr: 
+```bash
+source 20211015_tensorflowDeeplabResnet_CRF.sh
+```
 
-Para usar CRF, correr: python inference.py personas.jpg ./deeplab_resnet.ckpt
+Para usar CRF, correr: 
+```bash
+python inference.py personas.jpg ./deeplab_resnet.ckpt
+```
 
 ### Otros datos
 Se usó en python de anaconda (no sé si será relevante)
