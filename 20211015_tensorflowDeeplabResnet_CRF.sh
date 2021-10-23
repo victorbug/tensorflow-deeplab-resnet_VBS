@@ -32,7 +32,7 @@ python train.py --random-scale
 if false; then
 source 20211015_tensorflowDeeplabResnet_CRF.sh
 #Descargar el kit desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
-python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt #Algo asi para correr CRF
+python inference.py personas.jpg ./deeplab_resnet.ckpt #Algo asi para correr CRF
 #Bajar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
 fi
 
