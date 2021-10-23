@@ -104,7 +104,7 @@ At the moment, the post-processing step with CRF is not implemented. Besides tha
 ## Other implementations
 * [DeepLab-LargeFOV in TensorFlow](https://github.com/DrSleep/tensorflow-deeplab-lfov)
 
-## Victor
+## Víctor
 Descargar el kit desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
 
 Descargar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
