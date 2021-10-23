@@ -112,3 +112,6 @@ Descargar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHusw
 Para instalar requerimientos y entrenar, correr: source 20211015_tensorflowDeeplabResnet_CRF.sh
 
 Para usar CRF, correr: python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt
+
+# Otros datos
+Se usó en python de anaconda (no sé si será relevante)
