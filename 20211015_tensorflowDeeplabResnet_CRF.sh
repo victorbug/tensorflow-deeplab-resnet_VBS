@@ -31,18 +31,11 @@ python train.py --random-scale
 
 if false; then
 source 20211015_tensorflowDeeplabResnet_CRF.sh
-#Descargar el kit de https://www.kaggle.com/lyuxinshuai/vocdevkit
-python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt #Algo asi
-
+#Descargar el kit desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
+python inference.py dogewarrior.jpg ./deeplab_resnet.ckpt #Algo asi para correr CRF
+#Bajar checkpoints desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
 fi
 
 #basestring is no longer available in Python 3: https://stackoverflow.com/questions/34803467/unexpected-exception-name-basestring-is-not-defined-when-invoking-ansible2
-
-#Esto no lo voy a usar pero por si acaso: cd /home/vicbr/0Magister/TesisDocumentos/Modelos/tensorflow-deeplab-resnet
-
 #Downgrading to protobuf < 3.18 seems to be a good workaround: https://pythonrepo.com/repo/mozilla-services-syncserver-python-miscellaneous
-
-#python convert.py prototxt_and_model/solver.prototxt --caffemodel prototxt_and_model/train_iter20000.caffemodel --data-output-path outputVIC/mynet.py
-#python convert.py perro --caffemodel gato --data-output-path caballo
-
 
