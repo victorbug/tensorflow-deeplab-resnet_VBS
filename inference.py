@@ -116,7 +116,7 @@ def main():
     from datetime import datetime#VBS
     tiempo=datetime.today().strftime('%Y%m%d%H%M%S')#VBS
     pasos=str(dense_crf.__defaults__[1])#VBS. pasos se obtienen los parametros por default de otra funcion. Esta es una solución semi automatica
-    im.save(args.save_dir + tiempo + '_' + pasos + '_mask.png')#Original modificada    
+    im.save(args.save_dir + tiempo + '_' + pasos + '_mask.png')#Original modificada .    
 
     print('The output file has been saved to {}'.format(args.save_dir + tiempo + '_' + pasos + '_mask.png')) ##Original modificada    
     
