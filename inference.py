@@ -85,8 +85,8 @@ def main():
     raw_output_up = tf.image.resize_bilinear(raw_output, tf.shape(img)[0:2,])
     
     # CRF.
-    raw_output_up = tf.nn.softmax(raw_output_up)
-    print("Aca esta el CRF")
+    print("Aca esta el CRF de /inference.py")
+    raw_output_up = tf.nn.softmax(raw_output_up)    
     raw_output_up = tf.py_func(dense_crf, [raw_output_up, tf.expand_dims(img_orig, dim=0)], tf.float32)
     
     raw_output_up = tf.argmax(raw_output_up, dimension=3)
@@ -112,9 +112,21 @@ def main():
     im = Image.fromarray(msk[0])
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
-    im.save(args.save_dir + 'mask.png')
+
+    from datetime import datetime#VBS
+    tiempo=datetime.today().strftime('%Y%m%d%H%M%S')#VBS
+    pasos=str(dense_crf.__defaults__[1])#VBS. pasos se obtienen los parametros por default de otra funcion. Esta es una solución semi automatica
+    im.save(args.save_dir + tiempo + '_' + pasos + '_mask.png')#Original modificada    
+
+    print('The output file has been saved to {}'.format(args.save_dir + tiempo + '_' + pasos + '_mask.png')) ##Original modificada    
     
-    print('The output file has been saved to {}'.format(args.save_dir + 'mask.png'))
+    #from deeplab_resnet.utils.dense_crf import n_iters
+    #import inspect
+    #signature = inspect.signature(dense_crf)
+    #print(dense_crf.__defaults__)
+    #print(type(dense_crf.__defaults__))
+    #print(dense_crf.__defaults__[1])
+    #print(n_iters)    
 
     
 if __name__ == '__main__':

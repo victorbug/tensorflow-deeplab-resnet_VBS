@@ -1,5 +1,6 @@
 *.ckpt
 snapshots/
+output/
 VOCdevkit/VOC2012/Annotations/
 VOCdevkit/VOC2012/CSV_Annotations/
 VOCdevkit/VOC2012/JPEGImages/

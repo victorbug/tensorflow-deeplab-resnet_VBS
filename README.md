@@ -113,6 +113,7 @@ Para instalar requerimientos y entrenar, correr:
 ```bash
 source 20211015_tensorflowDeeplabResnet_CRF.sh
 ```
+Esto va a instalar python=2.7, tensorflow==0.12, protobuf==3.16, pydensecrf y los requerimientos originales (los que están en requirements.txt)
 
 Para usar CRF, correr: 
 ```bash

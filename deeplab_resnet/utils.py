@@ -80,7 +80,7 @@ def inv_preprocess(imgs, num_images=1):
     outputs[i] = (imgs[i] + IMG_MEAN)[:, :, ::-1].astype(np.uint8)
   return outputs
 
-def dense_crf(probs, img=None, n_iters=2, #Ojo originalmente es, n_iters=10
+def dense_crf(probs, img=None, n_iters=1, #Ojo originalmente es, n_iters=10
               sxy_gaussian=(1, 1), compat_gaussian=4,
               kernel_gaussian=dcrf.DIAG_KERNEL,
               normalisation_gaussian=dcrf.NORMALIZE_SYMMETRIC,
