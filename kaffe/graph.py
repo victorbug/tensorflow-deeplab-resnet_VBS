@@ -1,16 +1,27 @@
 print("Esta en kaffe/graph.py")
-from google.protobuf import text_format
 
+print("Esta en kaffe/graph.py. 1) Va a hacer from google.protobuf import text_format")
+from google.protobuf import text_format
+print("Esta en kaffe/graph.py. 2) Va a hacer from .caffe import get_caffe_resolver")
 from .caffe import get_caffe_resolver
+print("Esta en kaffe/graph.py. 3) Va a hacer from .errors import KaffeError, print_stderr")
 from .errors import KaffeError, print_stderr
-from .layers import LayerAdapter, LayerType, NodeKind, NodeDispatch
+print("Esta en kaffe/graph.py. 4) Va a hacer from .layers import LayerAdapter")
+from .layers import LayerAdapter
+print("Esta en kaffe/graph.py. 5) Va a hacer from .layers import LayerType")
+from .layers import LayerType
+print("Esta en kaffe/graph.py. 6) Va a hacer from .layers import NodeKind")
+from .layers import NodeKind
+print("Esta en kaffe/graph.py. 7) Va a hacer from .layers import NodeDispatch")
+from .layers import NodeDispatch
+print("Esta en kaffe/graph.py. 8) Va a hacer from .shapes import TensorShape")
 from .shapes import TensorShape
 
 class Node(object):
     print("Esta en kaffe/graph.py/Class Node")
 
     def __init__(self, name, kind, layer=None):
-        print("Esta en kaffe/graph.py/Class Node/__init__")
+        print("Esta en kaffe/graph.py/Class Node/def __init__")
         self.name = name
         self.kind = kind
         self.layer = LayerAdapter(layer, kind) if layer else None
@@ -21,21 +32,21 @@ class Node(object):
         self.metadata = {}
 
     def add_parent(self, parent_node):
-        print("Esta en kaffe/graph.py/Class Node/add_parent")
+        print("Esta en kaffe/graph.py/Class Node/def add_parent")
         assert parent_node not in self.parents
         self.parents.append(parent_node)
         if self not in parent_node.children:
             parent_node.children.append(self)
 
     def add_child(self, child_node):
-        print("Esta en kaffe/graph.py/Class Node/add_child")
+        print("Esta en kaffe/graph.py/Class Node/def add_child")
         assert child_node not in self.children
         self.children.append(child_node)
         if self not in child_node.parents:
             child_node.parents.append(self)
 
     def get_only_parent(self):
-        print("Esta en kaffe/graph.py/Class Node/get_only_parent")
+        print("Esta en kaffe/graph.py/Class Node/def get_only_parent")
         if len(self.parents) != 1:
             raise KaffeError('Node (%s) expected to have 1 parent. Found %s.' %
                              (self, len(self.parents)))
@@ -43,17 +54,17 @@ class Node(object):
 
     @property
     def parameters(self):
-        print("Esta en kaffe/graph.py/Class Node/parameters")
+        print("Esta en kaffe/graph.py/Class Node/def parameters")
         if self.layer is not None:
             return self.layer.parameters
         return None
 
     def __str__(self):
-        print("Esta en kaffe/graph.py/Class Node/__str__")
+        print("Esta en kaffe/graph.py/Class Node/def __str__")
         return '[%s] %s' % (self.kind, self.name)
 
     def __repr__(self):
-        print("Esta en kaffe/graph.py/Class Node/__repr__")
+        print("Esta en kaffe/graph.py/Class Node/def __repr__")
         return '%s (0x%x)' % (self.name, id(self))
 
 
@@ -61,40 +72,40 @@ class Graph(object):
     print("Esta en kaffe/graph.py/Class Graph")
 
     def __init__(self, nodes=None, name=None):
-        print("Esta en kaffe/graph.py/Class Graph/__init__")
+        print("Esta en kaffe/graph.py/Class Graph/def __init__")
         self.nodes = nodes or []
         self.node_lut = {node.name: node for node in self.nodes}
         self.name = name
 
     def add_node(self, node):
-        print("Esta en kaffe/graph.py/Class Graph/add_node")
+        print("Esta en kaffe/graph.py/Class Graph/def add_node")
         self.nodes.append(node)
         self.node_lut[node.name] = node
 
     def get_node(self, name):
-        print("Esta en kaffe/graph.py/Class Graph/get_node")
+        print("Esta en kaffe/graph.py/Class Graph/def get_node")
         try:
             return self.node_lut[name]
         except KeyError:
             raise KaffeError('Layer not found: %s' % name)
 
     def get_input_nodes(self):
-        print("Esta en kaffe/graph.py/Class Graph/get_input_nodes")
+        print("Esta en kaffe/graph.py/Class Graph/def get_input_nodes")
         return [node for node in self.nodes if len(node.parents) == 0]
 
     def get_output_nodes(self):
-        print("Esta en kaffe/graph.py/Class Graph/get_output_nodes")
+        print("Esta en kaffe/graph.py/Class Graph/def get_output_nodes")
         return [node for node in self.nodes if len(node.children) == 0]
 
     def topologically_sorted(self):
-        print("Esta en kaffe/graph.py/Class Graph/topologically_sorted")
+        print("Esta en kaffe/graph.py/Class Graph/def topologically_sorted")
         sorted_nodes = []
         unsorted_nodes = list(self.nodes)
         temp_marked = set()
         perm_marked = set()
 
         def visit(node):
-            print("Esta en kaffe/graph.py/Class Graph/topologically_sorted/visit")
+            print("Esta en kaffe/graph.py/Class Graph/def topologically_sorted/def visit")
             if node in temp_marked:
                 raise KaffeError('Graph is not a DAG.')
             if node in perm_marked:
@@ -111,17 +122,17 @@ class Graph(object):
         return sorted_nodes
 
     def compute_output_shapes(self):
-        print("Esta en kaffe/graph.py/Class Graph/compute_output_shapes")
+        print("Esta en kaffe/graph.py/Class Graph/def compute_output_shapes")
         sorted_nodes = self.topologically_sorted()
         for node in sorted_nodes:
             node.output_shape = TensorShape(*NodeKind.compute_output_shape(node))
 
     def replaced(self, new_nodes):
-        print("Esta en kaffe/graph.py/Class Graph/replaced")
+        print("Esta en kaffe/graph.py/Class Graph/def replaced")
         return Graph(nodes=new_nodes, name=self.name)
 
     def transformed(self, transformers):
-        print("Esta en kaffe/graph.py/Class Graph/transformed")
+        print("Esta en kaffe/graph.py/Class Graph/def transformed")
         graph = self
         for transformer in transformers:
             graph = transformer(graph)
@@ -131,11 +142,11 @@ class Graph(object):
         return graph
 
     def __contains__(self, key):
-        print("Esta en kaffe/graph.py/Class Graph/__contains__")
+        print("Esta en kaffe/graph.py/Class Graph/def __contains__")
         return key in self.node_lut
 
     def __str__(self):
-        print("Esta en kaffe/graph.py/Class Graph/__str__")
+        print("Esta en kaffe/graph.py/Class Graph/def __str__")
         hdr = '{:<20} {:<30} {:>20} {:>20}'.format('Type', 'Name', 'Param', 'Output')
         s = [hdr, '-' * 94]
         for node in self.topologically_sorted():
@@ -153,7 +164,7 @@ class GraphBuilder(object):
     '''Constructs a model graph from a Caffe protocol buffer definition.'''
 
     def __init__(self, def_path, phase='test'):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/__init__")
+        print("Esta en kaffe/graph.py/Class GraphBuilder/def __init__")
         '''
         def_path: Path to the model definition (.prototxt)
         data_path: Path to the model data (.caffemodel)
@@ -164,14 +175,14 @@ class GraphBuilder(object):
         self.load()
 
     def load(self):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/load")
+        print("Esta en kaffe/graph.py/Class GraphBuilder/def load")
         '''Load the layer definitions from the prototxt.'''
         self.params = get_caffe_resolver().NetParameter()
         with open(self.def_path, 'rb') as def_file:
             text_format.Merge(def_file.read(), self.params)
 
     def filter_layers(self, layers):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/filter_layers")
+        print("Esta en kaffe/graph.py/Class GraphBuilder/def filter_layers")
         '''Filter out layers based on the current phase.'''
         phase_map = {0: 'train', 1: 'test'}
         filtered_layer_names = set()
@@ -196,7 +207,7 @@ class GraphBuilder(object):
         return filtered_layers
 
     def make_node(self, layer):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/make_node")
+        print("Esta en kaffe/graph.py/Class GraphBuilderdef make_node")
         '''Create a graph node for the given layer.'''
         kind = NodeKind.map_raw_kind(layer.type)
         if kind is None:
@@ -207,7 +218,7 @@ class GraphBuilder(object):
         return Node(layer.name, kind, layer=layer)
 
     def make_input_nodes(self):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/make_input_nodes")
+        print("Esta en kaffe/graph.py/Class GraphBuilder/def make_input_nodes")
         '''
         Create data input nodes.
 
@@ -228,7 +239,7 @@ class GraphBuilder(object):
         return nodes
 
     def build(self):
-        print("Esta en kaffe/graph.py/Class GraphBuilder/build")
+        print("Esta en kaffe/graph.py/Class GraphBuilder/def build")
         '''
         Builds the graph from the Caffe layer definitions.
         '''
@@ -289,11 +300,11 @@ class NodeMapper(NodeDispatch):
     print("Esta en kaffe/graph.py/Class NodeMapper")
 
     def __init__(self, graph):
-        print("Esta en kaffe/graph.py/Class NodeMapper/__init__")
+        print("Esta en kaffe/graph.py/Class NodeMapper/def __init__")
         self.graph = graph
 
     def map(self):
-        print("Esta en kaffe/graph.py/Class NodeMapper/map")
+        print("Esta en kaffe/graph.py/Class NodeMapper/def map")
         nodes = self.graph.topologically_sorted()
         # Remove input nodes - we'll handle them separately.
         input_nodes = self.graph.get_input_nodes()
@@ -321,11 +332,11 @@ class NodeMapper(NodeDispatch):
         return self.commit(mapped_chains)
 
     def map_chain(self, chain):
-        print("Esta en kaffe/graph.py/Class NodeMapper/map_chain")
+        print("Esta en kaffe/graph.py/Class NodeMapper/def map_chain")
         return [self.map_node(node) for node in chain]
 
     def map_node(self, node):
-        print("Esta en kaffe/graph.py/Class NodeMapper/map_node")
+        print("Esta en kaffe/graph.py/Class NodeMapper/def map_node")
         map_func = self.get_handler(node.kind, 'map')
         mapped_node = map_func(node)
         assert mapped_node is not None
@@ -333,5 +344,5 @@ class NodeMapper(NodeDispatch):
         return mapped_node
 
     def commit(self, mapped_chains):
-        print("Esta en kaffe/graph.py/Class NodeMapper/commit")
+        print("Esta en kaffe/graph.py/Class NodeMapper/def commit")
         raise NotImplementedError('Must be implemented by subclass.')

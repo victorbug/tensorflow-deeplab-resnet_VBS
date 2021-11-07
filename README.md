@@ -108,6 +108,7 @@ At the moment, the post-processing step with CRF is not implemented. Besides tha
 Descargar el kit de imágenes y anotaciones (Annotations, CSV_Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject)(Aunque creo que son útiles solo las carpetas: ImageSets, JPEGImages, SegmentationClass, SegmentationObject) desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
 
 Descargar checkpoints (deeplab_resnet.ckpt y deeplab_resnet_init.ckpt) desde: https://drive.google.com/drive/folders/0B_rootXHuswsZ0E4Mjh1ZU5xZVU?resourcekey=0-9Ui2e1br1d6jymsI6UdGUQ
+O desde el link que se menciona mas anteriormente (en: ..."There is no need to perform the conversion yourself as you can download the already converted models - deeplab_resnet.ckpt (pre-trained) and deeplab_resnet_init.ckpt (the last layers are randomly initialised)..."): https://drive.google.com/open?id=0B_rootXHuswsZ0E4Mjh1ZU5xZVU
 
 Para instalar requerimientos y entrenar, correr: 
 ```bash

@@ -33,7 +33,7 @@ SAVE_PRED_EVERY = 100
 SNAPSHOT_DIR = './snapshots_finetune/'
 
 def get_arguments():
-    print("Esta en fine_tune.py/get_arguments")
+    print("Esta en fine_tune.py/def get_arguments")
     """Parse all the arguments provided from the CLI.
     
     Returns:
@@ -67,7 +67,7 @@ def get_arguments():
     return parser.parse_args()
 
 def save(saver, sess, logdir, step):
-    print("Esta en fine_tune.py/save")
+    print("Esta en fine_tune.py/def save")
     model_name = 'model.ckpt'
     checkpoint_path = os.path.join(logdir, model_name)
     
@@ -78,7 +78,7 @@ def save(saver, sess, logdir, step):
     print('The checkpoint has been created.')
 
 def load(saver, sess, ckpt_path):
-    print("Esta en fine_tune.py/load")
+    print("Esta en fine_tune.py/def load")
     '''Load trained weights.
     
     Args:
@@ -90,7 +90,7 @@ def load(saver, sess, ckpt_path):
     print("Restored model parameters from {}".format(ckpt_path))
 
 def main():
-    print("Esta en fine_tune.py/main")
+    print("Esta en fine_tune.py/def main")
     """Create the model and start the training."""
     args = get_arguments()
     

@@ -18,7 +18,7 @@ class DataInjector(object):
     '''
 
     def __init__(self, def_path, data_path):
-        print("Esta en kaffe/transformers.py/Class DataInjector/__init__")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def __init__")
         # The .prototxt file defining the graph
         self.def_path = def_path
         # The .caffemodel file containing the learned parameters
@@ -31,21 +31,21 @@ class DataInjector(object):
         self.load()
 
     def load(self):
-        print("Esta en kaffe/transformers.py/Class DataInjector/load")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def load")
         if has_pycaffe():
             self.load_using_caffe()
         else:
             self.load_using_pb()
 
     def load_using_caffe(self):
-        print("Esta en kaffe/transformers.py/Class DataInjector/load_using_caffe")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def load_using_caffe")
         caffe = get_caffe_resolver().caffe
         net = caffe.Net(self.def_path, self.data_path, caffe.TEST)
         data = lambda blob: blob.data
         self.params = [(k, map(data, v)) for k, v in net.params.items()]
 
     def load_using_pb(self):
-        print("Esta en kaffe/transformers.py/Class DataInjector/load_using_pb")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def load_using_pb")
         data = get_caffe_resolver().NetParameter()
         data.MergeFromString(open(self.data_path, 'rb').read())
         pair = lambda layer: (layer.name, self.normalize_pb_data(layer))
@@ -54,7 +54,7 @@ class DataInjector(object):
         self.did_use_pb = True
 
     def normalize_pb_data(self, layer):
-        print("Esta en kaffe/transformers.py/Class DataInjector/normalize_pb_data")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def normalize_pb_data")
         transformed = []
         for blob in layer.blobs:
             if len(blob.shape.dim):
@@ -70,7 +70,7 @@ class DataInjector(object):
         return transformed
 
     def adjust_parameters(self, node, data):
-        print("Esta en kaffe/transformers.py/Class DataInjector/adjust_parameters")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def adjust_parameters")
         if not self.did_use_pb:
             return data
         # When using the protobuf-backend, each parameter initially has four dimensions.
@@ -87,7 +87,7 @@ class DataInjector(object):
         return data
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class DataInjector/__call__")
+        print("Esta en kaffe/transformers.py/Class DataInjector/def __call__")
         for layer_name, data in self.params:
             if layer_name in graph:
                 node = graph.get_node(layer_name)
@@ -101,7 +101,7 @@ class DataReshaper(object):
     print("Esta en kaffe/transformers.py/Class DataReshaper")
 
     def __init__(self, mapping, replace=True):
-        print("Esta en kaffe/transformers.py/Class DataReshaper/__init__")
+        print("Esta en kaffe/transformers.py/Class DataReshaper/def __init__")
         # A dictionary mapping NodeKind to the transposed order.
         self.mapping = mapping
         # The node kinds eligible for reshaping
@@ -111,7 +111,7 @@ class DataReshaper(object):
         self.replace = replace
 
     def has_spatial_parent(self, node):
-        print("Esta en kaffe/transformers.py/Class DataReshaper/has_spatial_parent")
+        print("Esta en kaffe/transformers.py/Class DataReshaper/def has_spatial_parent")
         try:
             parent = node.get_only_parent()
             s = parent.output_shape
@@ -120,14 +120,14 @@ class DataReshaper(object):
             return False
 
     def map(self, node_kind):
-        print("Esta en kaffe/transformers.py/Class DataReshaper/map")
+        print("Esta en kaffe/transformers.py/Class DataReshaper/def map")
         try:
             return self.mapping[node_kind]
         except KeyError:
             raise KaffeError('Ordering not found for node kind: {}'.format(node_kind))
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class DataReshaper/__call__")
+        print("Esta en kaffe/transformers.py/Class DataReshaper/def __call__")
         for node in graph.nodes:
             if node.data is None:
                 continue
@@ -168,7 +168,7 @@ class SubNodeFuser(object):
     '''
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class SubNodeFuser/__call__")
+        print("Esta en kaffe/transformers.py/Class SubNodeFuser/def __call__")
         nodes = graph.nodes
         fused_nodes = []
         for node in nodes:
@@ -195,7 +195,7 @@ class SubNodeFuser(object):
         return graph.replaced(transformed_nodes)
 
     def is_eligible_pair(self, parent, child):
-        print("Esta en kaffe/transformers.py/Class SubNodeFuser/is_eligible_pair")
+        print("Esta en kaffe/transformers.py/Class SubNodeFuser/def is_eligible_pair")
         '''Returns true if this parent/child pair is eligible for fusion.'''
         raise NotImplementedError('Must be implemented by subclass.')
 
@@ -212,18 +212,18 @@ class ReLUFuser(SubNodeFuser):
     '''
 
     def __init__(self, allowed_parent_types=None):
-        print("Esta en kaffe/transformers.py/Class ReLUFuser/__init__")
+        print("Esta en kaffe/transformers.py/Class ReLUFuser/def __init__")
         # Fuse ReLUs when the parent node is one of the given types.
         # If None, all node types are eligible.
         self.allowed_parent_types = allowed_parent_types
 
     def is_eligible_pair(self, parent, child):
-        print("Esta en kaffe/transformers.py/Class ReLUFuser/is_eligible_pair")
+        print("Esta en kaffe/transformers.py/Class ReLUFuser/def is_eligible_pair")
         return ((self.allowed_parent_types is None or parent.kind in self.allowed_parent_types) and
                 child.kind == NodeKind.ReLU)
 
     def merge(self, parent, _):
-        print("Esta en kaffe/transformers.py/Class ReLUFuser/merge")
+        print("Esta en kaffe/transformers.py/Class ReLUFuser/def merge")
         parent.metadata['relu'] = True
 
 
@@ -239,12 +239,12 @@ class BatchNormScaleBiasFuser(SubNodeFuser):
     '''
 
     def is_eligible_pair(self, parent, child):
-        print("Esta en kaffe/transformers.py/Class BatchNormScaleBiasFuser/is_eligible_pair")
+        print("Esta en kaffe/transformers.py/Class BatchNormScaleBiasFuser/def is_eligible_pair")
         return (parent.kind == NodeKind.BatchNorm and child.kind == NodeKind.Scale and
                 child.parameters.axis == 1 and child.parameters.bias_term == True)
 
     def merge(self, parent, child):
-        print("Esta en kaffe/transformers.py/Class BatchNormScaleBiasFuser/merge")
+        print("Esta en kaffe/transformers.py/Class BatchNormScaleBiasFuser/def merge")
         parent.scale_bias_node = child
 
 
@@ -256,7 +256,7 @@ class BatchNormPreprocessor(object):
     '''
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class BatchNormPreprocessor/__call__")
+        print("Esta en kaffe/transformers.py/Class BatchNormPreprocessor/def __call__")
         for node in graph.nodes:
             if node.kind != NodeKind.BatchNorm:
                 continue
@@ -284,11 +284,11 @@ class NodeRenamer(object):
     '''
 
     def __init__(self, renamer):
-        print("Esta en kaffe/transformers.py/Class NodeRenamer/__init__")
+        print("Esta en kaffe/transformers.py/Class NodeRenamer/def __init__")
         self.renamer = renamer
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class NodeRenamer/__call__")
+        print("Esta en kaffe/transformers.py/Class NodeRenamer/def __call__")
         for node in graph.nodes:
             node.name = self.renamer(node)
         return graph
@@ -301,7 +301,7 @@ class ParameterNamer(object):
     '''
 
     def __call__(self, graph):
-        print("Esta en kaffe/transformers.py/Class ParameterNamer/__call__")
+        print("Esta en kaffe/transformers.py/Class ParameterNamer/def __call__")
         for node in graph.nodes:
             if node.data is None:
                 continue

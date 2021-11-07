@@ -25,7 +25,7 @@ NUM_STEPS = 1449 # Number of images in the validation set.
 RESTORE_FROM = './deeplab_resnet.ckpt'
 
 def get_arguments():
-    print("Esta en evaluate.py/get_arguments")
+    print("Esta en evaluate.py/def get_arguments")
     """Parse all the arguments provided from the CLI.
     
     Returns:
@@ -43,7 +43,7 @@ def get_arguments():
     return parser.parse_args()
 
 def load(saver, sess, ckpt_path):
-    print("Esta en evaluate.py/load")
+    print("Esta en evaluate.py/def load")
     '''Load trained weights.
     
     Args:
@@ -55,7 +55,7 @@ def load(saver, sess, ckpt_path):
     print("Restored model parameters from {}".format(ckpt_path))
 
 def main():
-    print("Esta en evaluate.py/main")
+    print("Esta en evaluate.py/def main")
     """Create the model and start the evaluation process."""
     args = get_arguments()
     

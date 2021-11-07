@@ -20,7 +20,7 @@ label_colours = [(0,0,0)
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)    
 
 def decode_labels(mask, num_images=1):
-    print("Esta en deeplab_resnet/utils.py/decode_labels")
+    print("Esta en deeplab_resnet/utils.py/def decode_labels")
     """Decode batch of segmentation masks.
     
     Args:
@@ -44,7 +44,7 @@ def decode_labels(mask, num_images=1):
     return outputs
 
 def prepare_label(input_batch, new_size):
-    print("Esta en deeplab_resnet/utils.py/prepare_label")
+    print("Esta en deeplab_resnet/utils.py/def prepare_label")
     """Resize masks and perform one-hot encoding.
 
     Args:
@@ -62,7 +62,7 @@ def prepare_label(input_batch, new_size):
     return input_batch
 
 def inv_preprocess(imgs, num_images=1):
-  print("Esta en deeplab_resnet/utils.py/inv_preprocess")
+  print("Esta en deeplab_resnet/utils.py/def inv_preprocess")
   """Inverse preprocessing of the batch of images.
      Add the mean vector and convert from BGR to RGB.
    
@@ -80,7 +80,7 @@ def inv_preprocess(imgs, num_images=1):
     outputs[i] = (imgs[i] + IMG_MEAN)[:, :, ::-1].astype(np.uint8)
   return outputs
 
-def dense_crf(probs, img=None, n_iters=1, #Ojo originalmente es, n_iters=10
+def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
               sxy_gaussian=(1, 1), compat_gaussian=4,
               kernel_gaussian=dcrf.DIAG_KERNEL,
               normalisation_gaussian=dcrf.NORMALIZE_SYMMETRIC,
@@ -88,7 +88,7 @@ def dense_crf(probs, img=None, n_iters=1, #Ojo originalmente es, n_iters=10
               srgb_bilateral=(13, 13, 13),
               kernel_bilateral=dcrf.DIAG_KERNEL,
               normalisation_bilateral=dcrf.NORMALIZE_SYMMETRIC):
-    print("Esta en deeplab_resnet/utils.py/dense_crf")
+    print("Esta en deeplab_resnet/utils.py/def dense_crf")
     """DenseCRF over unnormalised predictions.
        More details on the arguments at https://github.com/lucasb-eyer/pydensecrf.
     
@@ -109,38 +109,38 @@ def dense_crf(probs, img=None, n_iters=1, #Ojo originalmente es, n_iters=10
     Returns:
       Refined predictions after MAP inference.
     """
-    print("1")
+    print("1 utils.py")
     _, h, w, _ = probs.shape
-    print("2 probs: ", type(probs), probs.shape, "probs", probs[0][0][0][0])
+    print("2 utils.py: ", type(probs), probs.shape, "probs", probs[0][0][0][0])
     probs = probs[0].transpose(2, 0, 1).copy(order='C') # Need a contiguous array.
-    print("3 : ", type(probs), probs.shape, "probs", probs[0][0][0])
+    print("3 utils.py: ", type(probs), probs.shape, "probs", probs[0][0][0])
     #print("DenseCRFVICTOR")
     d = dcrf.DenseCRF2D(w, h, n_classes) # Define DenseCRF model.
-    print("4 :", type(d), d, "dcrf.DenseCRF2D(w, h, n_classes)")
-    U = -np.log(probs) # Unary potential.
+    print("4 utils.py:", type(d), d, "dcrf.DenseCRF2D(w, h, n_classes)")
+    U = -np.log(probs)+100*probs # Unary potential.
     #U = -np.log(probs)+100*probs # Unary potential.
-    print("5: ", type(U),U.shape, "-np.log(probs)", U[0][0][0], -np.log(probs[0][0][0])+1)
+    print("5 utils.py: ", type(U),U.shape, "-np.log(probs)", U[0][0][0], -np.log(probs[0][0][0])+100*probs[0][0][0])
     U = U.reshape((n_classes, -1)) # Needs to be flat.
-    print("6: ", type(U), U.shape, "U.reshape((n_classes, -1))", U[0][0])
-    d.setUnaryEnergy(U)
-    print("7: ", type(d), d, "d.setUnaryEnergy(U)")
+    print("6 utils.py: ", type(U), U.shape, "U.reshape((n_classes, -1))", U[0][0])
+    d.setUnaryEnergy(U)#Aca se cae cuando se hace el cambio de numero de clases. d es un objeto del tipo dcrf.DenseCRF2D
+    print("7 utils.py: ", type(d), d, "d.setUnaryEnergy(U)")
     d.addPairwiseGaussian(sxy=sxy_gaussian, compat=compat_gaussian,
                           kernel=kernel_gaussian, normalization=normalisation_gaussian)
-    print("8: ", type(d), d, "d.addPairwiseGaussian")
+    print("8 utils.py: ", type(d), d, "d.addPairwiseGaussian")
     if img is not None:
-        print("9: ", type(img),img.shape, "img", img[0][0][0][0])
+        print("9 utils.py: ", type(img),img.shape, "img", img[0][0][0][0])
         assert(img.shape[1:3] == (h, w)), "The image height and width must coincide with dimensions of the logits."
-        print("10: ")
+        print("10 utils.py: ")
         d.addPairwiseBilateral(sxy=sxy_bilateral, compat=compat_bilateral,
                                kernel=kernel_bilateral, normalization=normalisation_bilateral,
                                srgb=srgb_bilateral, rgbim=img[0])
         print("11: ", type(d), d, "d.addPairwiseBilateral")
     #print("10")
     Q = d.inference(n_iters)
-    print("12: ",type(Q), Q,"d.inference(n_iters)") 
+    print("12 utils.py: ",type(Q), Q,"d.inference(n_iters)") 
     preds = np.array(Q, dtype=np.float32).reshape((n_classes, h, w)).transpose(1, 2, 0)
-    print("13: ", type(preds),preds.shape, "preds", preds[0][0][0])
-    print("14: ", "n_iters=",n_iters)
+    print("13 utils.py: ", type(preds),preds.shape, "preds", preds[0][0][0])
+    print("14 utils.py: ", "n_iters=",n_iters)
     return np.expand_dims(preds, 0)
         
     

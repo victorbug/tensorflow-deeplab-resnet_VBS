@@ -7,7 +7,7 @@ import tensorflow as tf
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
 
 def read_labeled_image_list(data_dir, data_list):
-    print("Esta en deeplab_resnet/image_reader.py/read_labeled_image_list")
+    print("Esta en deeplab_resnet/image_reader.py/def read_labeled_image_list")
     """Reads txt file containing paths to images and ground truth masks.
     
     Args:
@@ -30,7 +30,7 @@ def read_labeled_image_list(data_dir, data_list):
     return images, masks
 
 def read_images_from_disk(input_queue, input_size, random_scale): # optional pre-processing arguments
-    print("Esta en deeplab_resnet/image_reader.py/read_images_from_disk")
+    print("Esta en deeplab_resnet/image_reader.py/def read_images_from_disk")
     """Read one image and its corresponding mask with optional pre-processing.
     
     Args:
@@ -74,7 +74,7 @@ class ImageReader(object):
     '''
 
     def __init__(self, data_dir, data_list, input_size, random_scale, coord):
-        print("Esta en deeplab_resnet/image_reader.py/Class ImageReader/__init__")
+        print("Esta en deeplab_resnet/image_reader.py/Class ImageReader/def __init__")
         '''Initialise an ImageReader.
         
         Args:
@@ -97,7 +97,7 @@ class ImageReader(object):
         self.image, self.label = read_images_from_disk(self.queue, self.input_size, random_scale) 
 
     def dequeue(self, num_elements):
-        print("Esta en deeplab_resnet/image_reader.py/Class ImageReader/dequeue")
+        print("Esta en deeplab_resnet/image_reader.py/Class ImageReader/def dequeue")
         '''Pack images and labels into a batch.
         
         Args:

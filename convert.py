@@ -10,13 +10,13 @@ from kaffe import KaffeError, print_stderr
 from kaffe.tensorflow import TensorFlowTransformer
 
 def fatal_error(msg):
-    print("Esta en convert.py/fatal_error")
+    print("Esta en convert.py/def fatal_error")
     print_stderr(msg)
     exit(-1)
 
 
 def validate_arguments(args):
-    print("Esta en convert.py/validate_arguments")
+    print("Esta en convert.py/def validate_arguments")
     if (args.data_output_path is not None) and (args.caffemodel is None):
         fatal_error('No input data path provided.')
     if (args.caffemodel is not None) and (args.data_output_path is None):
@@ -26,7 +26,7 @@ def validate_arguments(args):
 
 
 def convert(def_path, caffemodel_path, data_output_path, code_output_path, phase):
-    print("Esta en convert.py/convert")
+    print("Esta en convert.py/def convert")
     try:
         transformer = TensorFlowTransformer(def_path, caffemodel_path, phase=phase)
         print_stderr('Converting data...')
@@ -45,7 +45,7 @@ def convert(def_path, caffemodel_path, data_output_path, code_output_path, phase
 
 
 def main():
-    print("Esta en convert.py/main")
+    print("Esta en convert.py/def main")
     parser = argparse.ArgumentParser()
     parser.add_argument('def_path', help='Model definition (.prototxt) path')
     parser.add_argument('--caffemodel', help='Model data (.caffemodel) path')

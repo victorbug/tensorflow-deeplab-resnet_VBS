@@ -33,7 +33,7 @@ SNAPSHOT_DIR = './snapshots/'
 
 
 def get_arguments():
-    print("Esta en train.py/get_arguments")
+    print("Esta en train.py/def get_arguments")
     """Parse all the arguments provided from the CLI.
     
     Returns:
@@ -67,7 +67,7 @@ def get_arguments():
     return parser.parse_args()
 
 def save(saver, sess, logdir, step):
-    print("Esta en train.py/get_arguments")
+    print("Esta en train.py/def get_arguments")
     model_name = 'model.ckpt'
     checkpoint_path = os.path.join(logdir, model_name)
     
@@ -78,7 +78,7 @@ def save(saver, sess, logdir, step):
     print('The checkpoint has been created.')
 
 def load(saver, sess, ckpt_path):
-    print("Esta en train.py/load")
+    print("Esta en train.py/def load")
     '''Load trained weights.
     
     Args:
@@ -90,7 +90,7 @@ def load(saver, sess, ckpt_path):
     print("Restored model parameters from {}".format(ckpt_path))
 
 def main():
-    print("Esta en train.py/main")
+    print("Esta en train.py/def main")
     """Create the model and start the training."""
     args = get_arguments()
     

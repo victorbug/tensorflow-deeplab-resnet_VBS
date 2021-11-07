@@ -7,11 +7,11 @@ DEFAULT_PADDING = 'SAME'
 
 
 def layer(op):
-    print("Esta en kaffe/tensorflow/network.py/layer")
+    print("Esta en kaffe/tensorflow/network.py/def layer")
     '''Decorator for composable network layers.'''
 
     def layer_decorated(self, *args, **kwargs):
-        print("Esta en kaffe/tensorflow/network.py/layer/layer_decorated")
+        print("Esta en kaffe/tensorflow/network.py/def layer/def layer_decorated")
         # Automatically set a name if not provided.
         name = kwargs.setdefault('name', self.get_unique_name(op.__name__))
         # Figure out the layer inputs.
@@ -37,7 +37,7 @@ class Network(object):
     print("Esta en kaffe/tensorflow/network.py/Class Network")
 
     def __init__(self, inputs, trainable=True, is_training=False):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/__init__")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def __init__")
         # The input nodes for this network
         self.inputs = inputs
         # The current list of terminal nodes
@@ -53,12 +53,12 @@ class Network(object):
         self.setup(is_training)
 
     def setup(self, is_training):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/setup")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def setup")
         '''Construct the network. '''
         raise NotImplementedError('Must be implemented by the subclass.')
 
     def load(self, data_path, session, ignore_missing=False):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/load")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def load")
         '''Load network weights.
         data_path: The path to the numpy-serialized network weights
         session: The current TensorFlow session
@@ -76,7 +76,7 @@ class Network(object):
                             raise
 
     def feed(self, *args):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/feed")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def feed")
         '''Set the input(s) for the next operation by replacing the terminal nodes.
         The arguments can be either layer names or the actual layers.
         '''
@@ -92,12 +92,12 @@ class Network(object):
         return self
 
     def get_output(self):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/get_output")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def get_output")
         '''Returns the current network output.'''
         return self.terminals[-1]
 
     def get_unique_name(self, prefix):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/get_unique_name")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def get_unique_name")
         '''Returns an index-suffixed unique name for the given prefix.
         This is used for auto-generating layer names based on the type-prefix.
         '''
@@ -105,12 +105,12 @@ class Network(object):
         return '%s_%d' % (prefix, ident)
 
     def make_var(self, name, shape):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/make_var")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def make_var")
         '''Creates a new TensorFlow variable.'''
         return tf.get_variable(name, shape, trainable=self.trainable)
 
     def validate_padding(self, padding):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/validate_padding")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def validate_padding")
         '''Verifies that the padding is one of the supported ones.'''
         assert padding in ('SAME', 'VALID')
 
@@ -127,7 +127,7 @@ class Network(object):
              padding=DEFAULT_PADDING,
              group=1,
              biased=True):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/conv")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def conv")
         # Verify that the padding is acceptable
         self.validate_padding(padding)
         # Get the number of channels in the input
@@ -170,7 +170,7 @@ class Network(object):
                     padding=DEFAULT_PADDING,
                     group=1,
                     biased=True):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/atrous_conv")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def atrous_conv")
         # Verify that the padding is acceptable
         self.validate_padding(padding)
         # Get the number of channels in the input
@@ -203,12 +203,12 @@ class Network(object):
         
     @layer
     def relu(self, input, name):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/relu")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def relu")
         return tf.nn.relu(input, name=name)
 
     @layer
     def max_pool(self, input, k_h, k_w, s_h, s_w, name, padding=DEFAULT_PADDING):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/max_pool")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def max_pool")
         self.validate_padding(padding)
         return tf.nn.max_pool(input,
                               ksize=[1, k_h, k_w, 1],
@@ -218,7 +218,7 @@ class Network(object):
 
     @layer
     def avg_pool(self, input, k_h, k_w, s_h, s_w, name, padding=DEFAULT_PADDING):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/avg_pool")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def avg_pool")
         self.validate_padding(padding)
         return tf.nn.avg_pool(input,
                               ksize=[1, k_h, k_w, 1],
@@ -228,7 +228,7 @@ class Network(object):
 
     @layer
     def lrn(self, input, radius, alpha, beta, name, bias=1.0):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/lrn")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def lrn")
         return tf.nn.local_response_normalization(input,
                                                   depth_radius=radius,
                                                   alpha=alpha,
@@ -238,17 +238,17 @@ class Network(object):
 
     @layer
     def concat(self, inputs, axis, name):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/concat")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def concat")
         return tf.concat(concat_dim=axis, values=inputs, name=name)
 
     @layer
     def add(self, inputs, name):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/add")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def add")
         return tf.add_n(inputs, name=name)
 
     @layer
     def fc(self, input, num_out, name, relu=True):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/fc")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def fc")
         with tf.variable_scope(name) as scope:
             input_shape = input.get_shape()
             if input_shape.ndims == 4:
@@ -267,7 +267,7 @@ class Network(object):
 
     @layer
     def softmax(self, input, name):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/softmax")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def softmax")
         input_shape = map(lambda v: v.value, input.get_shape())
         if len(input_shape) > 2:
             # For certain models (like NiN), the singleton spatial dimensions
@@ -281,7 +281,7 @@ class Network(object):
         
     @layer
     def batch_normalization(self, input, name, is_training, activation_fn=None, scale=True):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/batch_normalization")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def batch_normalization")
         with tf.variable_scope(name) as scope:
             output = slim.batch_norm(
                 input,
@@ -294,6 +294,6 @@ class Network(object):
 
     @layer
     def dropout(self, input, keep_prob, name):
-        print("Esta en kaffe/tensorflow/network.py/Class Network/dropout")
+        print("Esta en kaffe/tensorflow/network.py/Class Network/def dropout")
         keep = 1 - self.use_dropout + (self.use_dropout * keep_prob)
         return tf.nn.dropout(input, keep, name=name)

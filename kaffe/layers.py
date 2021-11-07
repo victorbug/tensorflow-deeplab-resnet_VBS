@@ -61,14 +61,14 @@ class NodeKind(LayerType):
     print("Esta en kaffe/layers.py/Class NodeKind")
     @staticmethod
     def map_raw_kind(kind):
-        print("Esta en kaffe/layers.py/Class NodeKind/map_raw_kind")
+        print("Esta en kaffe/layers.py/Class NodeKind/def map_raw_kind")
         if kind in LAYER_TYPES:
             return kind
         return None
 
     @staticmethod
     def compute_output_shape(node):
-        print("Esta en kaffe/layers.py/Class NodeKind/compute_output_shape")
+        print("Esta en kaffe/layers.py/Class NodeKind/def compute_output_shape")
         try:
             val = LAYER_DESCRIPTORS[node.kind](node)
             return val
@@ -86,7 +86,7 @@ class NodeDispatch(object):
 
     @staticmethod
     def get_handler_name(node_kind):
-        print("Esta en kaffe/layers.py/Class NodeDispatch/get_handler_name")
+        print("Esta en kaffe/layers.py/Class NodeDispatch/def get_handler_name")
         if len(node_kind) <= 4:
             # A catch-all for things like ReLU and tanh
             return node_kind.lower()
@@ -95,7 +95,7 @@ class NodeDispatch(object):
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
 
     def get_handler(self, node_kind, prefix):
-        print("Esta en kaffe/layers.py/Class NodeDispatch/get_handler")
+        print("Esta en kaffe/layers.py/Class NodeDispatch/def get_handler")
         name = self.get_handler_name(node_kind)
         name = '_'.join((prefix, name))
         try:
@@ -108,13 +108,13 @@ class NodeDispatch(object):
 class LayerAdapter(object):
     print("Esta en kaffe/layers.py/Class LayerAdapter")
     def __init__(self, layer, kind):
-        print("Esta en kaffe/layers.py/Class LayerAdapter/__init__")
+        print("Esta en kaffe/layers.py/Class LayerAdapter/def __init__")
         self.layer = layer
         self.kind = kind
 
     @property
     def parameters(self):
-        print("Esta en kaffe/layers.py/Class LayerAdapter/parameters")
+        print("Esta en kaffe/layers.py/Class LayerAdapter/def parameters")
         name = NodeDispatch.get_handler_name(self.kind)
         name = '_'.join((name, 'param'))
         try:
@@ -124,7 +124,7 @@ class LayerAdapter(object):
 
     @staticmethod
     def get_kernel_value(scalar, repeated, idx, default=None):
-        print("Esta en kaffe/layers.py/Class LayerAdapter/get_kernel_value")
+        print("Esta en kaffe/layers.py/Class LayerAdapter/def get_kernel_value")
         if scalar:
             return scalar
         if repeated:
@@ -142,7 +142,7 @@ class LayerAdapter(object):
 
     @property
     def kernel_parameters(self):
-        print("Esta en kaffe/layers.py/Class LayerAdapter/kernel_parameters")
+        print("Esta en kaffe/layers.py/Class LayerAdapter/def kernel_parameters")
         assert self.kind in (NodeKind.Convolution, NodeKind.Pooling)
         params = self.parameters
         k_h = self.get_kernel_value(params.kernel_h, params.kernel_size, 0)

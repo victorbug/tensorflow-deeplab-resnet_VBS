@@ -8,14 +8,14 @@ TensorShape = namedtuple('TensorShape', ['batch_size', 'channels', 'height', 'wi
 
 
 def get_filter_output_shape(i_h, i_w, params, round_func):
-    print("Esta en kaffe/shapes.py/get_filter_output_shape")
+    print("Esta en kaffe/shapes.py/def get_filter_output_shape")
     o_h = (i_h + 2 * params.pad_h - params.kernel_h) / float(params.stride_h) + 1
     o_w = (i_w + 2 * params.pad_w - params.kernel_w) / float(params.stride_w) + 1
     return (int(round_func(o_h)), int(round_func(o_w)))
 
 
 def get_strided_kernel_output_shape(node, round_func):
-    print("Esta en kaffe/shapes.py/get_strided_kernel_output_shape")
+    print("Esta en kaffe/shapes.pydef get_strided_kernel_output_shape")
     assert node.layer is not None
     input_shape = node.get_only_parent().output_shape
     o_h, o_w = get_filter_output_shape(input_shape.height, input_shape.width,
@@ -27,23 +27,23 @@ def get_strided_kernel_output_shape(node, round_func):
 
 
 def shape_not_implemented(node):
-    print("Esta en kaffe/shapes.py/shape_not_implemented")
+    print("Esta en kaffe/shapes.py/def shape_not_implemented")
     raise NotImplementedError
 
 
 def shape_identity(node):
-    print("Esta en kaffe/shapes.py/shape_identity")
+    print("Esta en kaffe/shapes.py/def shape_identity")
     assert len(node.parents) > 0
     return node.parents[0].output_shape
 
 
 def shape_scalar(node):
-    print("Esta en kaffe/shapes.py/shape_scalar")
+    print("Esta en kaffe/shapes.py/def shape_scalar")
     return TensorShape(1, 1, 1, 1)
 
 
 def shape_data(node):
-    print("Esta en kaffe/shapes.py/shape_data")
+    print("Esta en kaffe/shapes.py/def shape_data")
     if node.output_shape:
         # Old-style input specification
         return node.output_shape
@@ -62,13 +62,13 @@ def shape_data(node):
 
 
 def shape_mem_data(node):
-    print("Esta en kaffe/shapes.py/shape_mem_data")
+    print("Esta en kaffe/shapes.py/def shape_mem_data")
     params = node.parameters
     return TensorShape(params.batch_size, params.channels, params.height, params.width)
 
 
 def shape_concat(node):
-    print("Esta en kaffe/shapes.py/shape_concat")
+    print("Esta en kaffe/shapes.py/def shape_concat")
     axis = node.layer.parameters.axis
     output_shape = None
     for parent in node.parents:
@@ -80,16 +80,16 @@ def shape_concat(node):
 
 
 def shape_convolution(node):
-    print("Esta en kaffe/shapes.py/shape_convolution")
+    print("Esta en kaffe/shapes.py/def shape_convolution")
     return get_strided_kernel_output_shape(node, math.floor)
 
 
 def shape_pool(node):
-    print("Esta en kaffe/shapes.py/shape_pool")
+    print("Esta en kaffe/shapes.py/def shape_pool")
     return get_strided_kernel_output_shape(node, math.ceil)
 
 
 def shape_inner_product(node):
-    print("Esta en kaffe/shapes.py/shape_inner_product")
+    print("Esta en kaffe/shapes.py/def shape_inner_product")
     input_shape = node.get_only_parent().output_shape
     return TensorShape(input_shape.batch_size, node.layer.parameters.num_output, 1, 1)

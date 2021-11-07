@@ -1,16 +1,30 @@
 print("Esta en kaffe/tensorflow/transfomer.py")
+
+print("Esta en kaffe/tensorflow/transfomer.py. 1,2,3,4,5,6) Va a hacer import numpy as np//from ..errors import KaffeError, print_stderr//from ..layers import NodeKind")
 import numpy as np
 
 from ..errors import KaffeError, print_stderr
 from ..graph import GraphBuilder, NodeMapper
 from ..layers import NodeKind
-from ..transformers import (DataInjector, DataReshaper, NodeRenamer, ReLUFuser,
-                            BatchNormScaleBiasFuser, BatchNormPreprocessor, ParameterNamer)
-
+print("Esta en kaffe/tensorflow/transfomer.py. 7) Va a hacer from ..transformers import DataInjector")
+from ..transformers import (DataInjector)
+print("Esta en kaffe/tensorflow/transfomer.py. 8) Va a hacer from ..transformers import DataReshaper")
+from ..transformers import (DataReshaper)
+print("Esta en kaffe/tensorflow/transfomer.py. 9) Va a hacer from ..transformers import NodeRenamer")
+from ..transformers import (NodeRenamer)
+print("Esta en kaffe/tensorflow/transfomer.py. 10) Va a hacer from ..transformers import ReLUFuser")
+from ..transformers import (ReLUFuser)
+print("Esta en kaffe/tensorflow/transfomer.py. 11) Va a hacer from ..transformers import BatchNormScaleBiasFuser")
+from ..transformers import (BatchNormScaleBiasFuser)
+print("Esta en kaffe/tensorflow/transfomer.py. 12) Va a hacer from ..transformers import BatchNormPreprocessor")
+from ..transformers import (BatchNormPreprocessor)
+print("Esta en kaffe/tensorflow/transfomer.py. 13) Va a hacer from ..transformers import ParameterNamer")
+from ..transformers import (ParameterNamer)
+print("Esta en kaffe/tensorflow/transfomer.py. 14) Va a hacer from . import network")
 from . import network
 
 def get_padding_type(kernel_params, input_shape, output_shape):
-    print("Esta en kaffe/tensorflow/transfomer.py/get_padding_type")
+    print("Esta en kaffe/tensorflow/transfomer.py/def get_padding_type")
     '''Translates Caffe's numeric padding to one of ('SAME', 'VALID').
     Caffe supports arbitrary padding values, while TensorFlow only
     supports 'SAME' and 'VALID' modes. So, not all Caffe paddings
@@ -35,7 +49,7 @@ class TensorFlowNode(object):
     '''An intermediate representation for TensorFlow operations.'''
 
     def __init__(self, op, *args, **kwargs):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/__init__")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/def __init__")
         # A string corresponding to the TensorFlow operation
         self.op = op
         # Positional arguments for the operation
@@ -46,17 +60,17 @@ class TensorFlowNode(object):
         self.node = None
 
     def format(self, arg):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/format")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/def format")
         '''Returns a string representation for the given value.'''
         return "'%s'" % arg if isinstance(arg, basestring) else str(arg)
 
     def pair(self, key, value):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/pair")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/def pair")
         '''Returns key=formatted(value).'''
         return '%s=%s' % (key, self.format(value))
 
     def emit(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/emit")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowNode/def emit")
         '''Emits the Python source for this node.'''
         # Format positional arguments
         args = map(self.format, self.args)
@@ -73,13 +87,13 @@ class MaybeActivated(object):
     print("Esta en kaffe/tensorflow/transfomer.py/Class MaybeActivated")
 
     def __init__(self, node, default=True):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class MaybeActivated/__init__")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class MaybeActivated/def __init__")
         self.inject_kwargs = {}
         if node.metadata.get('relu', False) != default:
             self.inject_kwargs['relu'] = not default
 
     def __call__(self, *args, **kwargs):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class MaybeActivated/__call__")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class MaybeActivated/def __call__")
         kwargs.update(self.inject_kwargs)
         return TensorFlowNode(*args, **kwargs)
 
@@ -88,7 +102,7 @@ class TensorFlowMapper(NodeMapper):
     print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper")
 
     def get_kernel_params(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/get_kernel_params")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def get_kernel_params")
         kernel_params = node.layer.kernel_parameters
         input_shape = node.get_only_parent().output_shape
         padding = get_padding_type(kernel_params, input_shape, node.output_shape)
@@ -97,7 +111,7 @@ class TensorFlowMapper(NodeMapper):
         return (kernel_params, padding)
 
     def map_convolution(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_convolution")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_convolution")
         (kernel_params, kwargs) = self.get_kernel_params(node)
         h = kernel_params.kernel_h
         w = kernel_params.kernel_w
@@ -114,11 +128,11 @@ class TensorFlowMapper(NodeMapper):
                                     kernel_params.stride_h, kernel_params.stride_w, **kwargs)
 
     def map_relu(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_relu")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_relu")
         return TensorFlowNode('relu')
 
     def map_pooling(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_pooling")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_pooling")
         pool_type = node.parameters.pool
         if pool_type == 0:
             pool_op = 'max_pool'
@@ -132,7 +146,7 @@ class TensorFlowMapper(NodeMapper):
                               kernel_params.stride_h, kernel_params.stride_w, **padding)
 
     def map_inner_product(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_inner_product")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_inner_product")
         #TODO: Axis
         assert node.parameters.axis == 1
         #TODO: Unbiased
@@ -140,11 +154,11 @@ class TensorFlowMapper(NodeMapper):
         return MaybeActivated(node)('fc', node.parameters.num_output)
 
     def map_softmax(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_softmax")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_softmax")
         return TensorFlowNode('softmax')
 
     def map_lrn(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_lrn")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_lrn")
         params = node.parameters
         # The window size must be an odd value. For a window
         # size of (2*n+1), TensorFlow defines depth_radius = n.
@@ -156,22 +170,22 @@ class TensorFlowMapper(NodeMapper):
         return TensorFlowNode('lrn', int(params.local_size / 2), alpha, params.beta)
 
     def map_concat(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_concat")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_concat")
         axis = (2, 3, 1, 0)[node.parameters.axis]
         return TensorFlowNode('concat', axis)
 
     def map_dropout(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_dropout")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_dropout")
         return TensorFlowNode('dropout', node.parameters.dropout_ratio)
 
     def map_batch_norm(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_batch_norm")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_batch_norm")
         scale_offset = len(node.data) == 4
         kwargs = {'is_training': True} if scale_offset else {'is_training': True, 'scale': False}
         return MaybeActivated(node, default=False)('batch_normalization', **kwargs)
 
     def map_eltwise(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/map_eltwise")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def map_eltwise")
         operations = {0: 'multiply', 1: 'add', 2: 'max'}
         op_code = node.parameters.operation
         try:
@@ -180,7 +194,7 @@ class TensorFlowMapper(NodeMapper):
             raise KaffeError('Unknown elementwise operation: {}'.format(op_code))
 
     def commit(self, chains):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/commit")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowMapper/def commit")
         return chains
 
 
@@ -188,36 +202,36 @@ class TensorFlowEmitter(object):
     print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter")
 
     def __init__(self, tab=None):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/__init__")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def __init__")
         self.tab = tab or ' ' * 4
         self.prefix = ''
 
     def indent(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/indent")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def indent")
         self.prefix += self.tab
 
     def outdent(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/outdent")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def outdent")
         self.prefix = self.prefix[:-len(self.tab)]
 
     def statement(self, s):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/statement")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def statement")
         return self.prefix + s + '\n'
 
     def emit_imports(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit_imports")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit_imports")
         return self.statement('from kaffe.tensorflow import Network\n')
 
     def emit_class_def(self, name):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit_class_def")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit_class_def")
         return self.statement('class %s(Network):' % (name))
 
     def emit_setup_def(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit_setup_def")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit_setup_def")
         return self.statement('def setup(self):')
 
     def emit_parents(self, chain):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit_parents")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit_parents")
         assert len(chain)
         s = '(self.feed('
         sep = ', \n' + self.prefix + (' ' * len(s))
@@ -225,11 +239,11 @@ class TensorFlowEmitter(object):
         return self.statement(s + ')')
 
     def emit_node(self, node):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit_node")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit_node")
         return self.statement(' ' * 5 + '.' + node.emit())
 
     def emit(self, name, chains):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/emit")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowEmitter/def emit")
         s = self.emit_imports()
         s += self.emit_class_def(name)
         self.indent()
@@ -250,7 +264,7 @@ class TensorFlowTransformer(object):
     print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer")
 
     def __init__(self, def_path, data_path, verbose=True, phase='test'):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/__init__")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/def __init__")
         self.verbose = verbose
         self.phase = phase
         self.load(def_path, data_path, phase)
@@ -258,7 +272,7 @@ class TensorFlowTransformer(object):
         self.source = None
 
     def load(self, def_path, data_path, phase):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/load")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/def load")
         # Build the graph
         graph = GraphBuilder(def_path, phase).build()
 
@@ -290,7 +304,7 @@ class TensorFlowTransformer(object):
             print_stderr(self.graph)
 
     def transform_data(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/transform_data")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/def transform_data")
         if self.params is None:
             transformers = [
 
@@ -314,7 +328,7 @@ class TensorFlowTransformer(object):
         return self.params
 
     def transform_source(self):
-        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/transform_source")
+        print("Esta en kaffe/tensorflow/transfomer.py/Class TensorFlowTransformer/def transform_source")
         if self.source is None:
             mapper = TensorFlowMapper(self.graph)
             chains = mapper.map()
