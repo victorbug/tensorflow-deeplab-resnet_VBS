@@ -12,7 +12,7 @@ import tensorflow as tf
 class DeepLabResNetModel(Network):#Extiende clase Network
     print("Esta en deeplab_resnet/model.py/Class DeepLabResNetModel")
     #self.ejemplo=1
-    def setup(self, is_training):
+    def setup(self, is_training, num_classes):
         print("Esta en deeplab_resnet/model.py/Class DeepLabResNetModel/def setup")
         '''Network definition.
         
@@ -432,16 +432,16 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                        'bn5c_branch2c')
                  .add(name='res5c')
                  .relu(name='res5c_relu')
-                 .atrous_conv(3, 3, 21, 6, padding='SAME', relu=False, name='fc1_voc12_c0'))
+                 .atrous_conv(3, 3, num_classes, 6, padding='SAME', relu=False, name='fc1_voc12_c0'))
 
             (self.feed('res5c_relu')
-                 .atrous_conv(3, 3, 21, 12, padding='SAME', relu=False, name='fc1_voc12_c1'))
+                 .atrous_conv(3, 3, num_classes, 12, padding='SAME', relu=False, name='fc1_voc12_c1'))
 
             (self.feed('res5c_relu')
-                 .atrous_conv(3, 3, 21, 18, padding='SAME', relu=False, name='fc1_voc12_c2'))
+                 .atrous_conv(3, 3, num_classes, 18, padding='SAME', relu=False, name='fc1_voc12_c2'))
 
             (self.feed('res5c_relu')
-                 .atrous_conv(3, 3, 21, 24, padding='SAME', relu=False, name='fc1_voc12_c3'))
+                 .atrous_conv(3, 3, num_classes, 24, padding='SAME', relu=False, name='fc1_voc12_c3'))
 
             
             #Sumar todas las entradas?. En deploy.prototxt dice ### SUM the all branches

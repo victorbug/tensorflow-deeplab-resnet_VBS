@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import pydensecrf.densecrf as dcrf
 
-n_classes = 21
+#n_classes = 21 #Ojo que esta es como una variable global dentro de este script y la parte delCRF lo usa harto
 # colour map
 label_colours = [(0,0,0)
                 # 0=background
@@ -19,7 +19,7 @@ label_colours = [(0,0,0)
 # image mean
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)    
 
-def decode_labels(mask, num_images=1):
+def decode_labels(mask, num_images=1, num_classes=21):
     print("Esta en deeplab_resnet/utils.py/def decode_labels")
     """Decode batch of segmentation masks.
     
@@ -38,12 +38,12 @@ def decode_labels(mask, num_images=1):
       pixels = img.load()
       for j_, j in enumerate(mask[i, :, :, 0]):
           for k_, k in enumerate(j):
-              if k < n_classes:
+              if k < num_classes:
                   pixels[k_,j_] = label_colours[k]
       outputs[i] = np.array(img)
     return outputs
 
-def prepare_label(input_batch, new_size):
+def prepare_label(input_batch, new_size, num_classes):
     print("Esta en deeplab_resnet/utils.py/def prepare_label")
     """Resize masks and perform one-hot encoding.
 
@@ -58,7 +58,7 @@ def prepare_label(input_batch, new_size):
     with tf.name_scope('label_encode'):
         input_batch = tf.image.resize_nearest_neighbor(input_batch, new_size) # as labels are integer numbers, need to use NN interp.
         input_batch = tf.squeeze(input_batch, squeeze_dims=[3]) # reducing the channel dimension.
-        input_batch = tf.one_hot(input_batch, depth=n_classes)
+        input_batch = tf.one_hot(input_batch, depth=num_classes)
     return input_batch
 
 def inv_preprocess(imgs, num_images=1):
@@ -87,7 +87,8 @@ def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
               sxy_bilateral=(49, 49), compat_bilateral=5,
               srgb_bilateral=(13, 13, 13),
               kernel_bilateral=dcrf.DIAG_KERNEL,
-              normalisation_bilateral=dcrf.NORMALIZE_SYMMETRIC):
+              normalisation_bilateral=dcrf.NORMALIZE_SYMMETRIC,
+              num_classes=21):
     print("Esta en deeplab_resnet/utils.py/def dense_crf")
     """DenseCRF over unnormalised predictions.
        More details on the arguments at https://github.com/lucasb-eyer/pydensecrf.
@@ -115,13 +116,13 @@ def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
     probs = probs[0].transpose(2, 0, 1).copy(order='C') # Need a contiguous array.
     print("3 utils.py: ", type(probs), probs.shape, "probs", probs[0][0][0])
     #print("DenseCRFVICTOR")
-    d = dcrf.DenseCRF2D(w, h, n_classes) # Define DenseCRF model.
-    print("4 utils.py:", type(d), d, "dcrf.DenseCRF2D(w, h, n_classes)")
+    d = dcrf.DenseCRF2D(w, h, num_classes) # Define DenseCRF model.
+    print("4 utils.py:", type(d), d, "dcrf.DenseCRF2D(w, h, num_classes)")
     U = -np.log(probs)+100*probs # Unary potential.
     #U = -np.log(probs)+100*probs # Unary potential.
     print("5 utils.py: ", type(U),U.shape, "-np.log(probs)", U[0][0][0], -np.log(probs[0][0][0])+100*probs[0][0][0])
-    U = U.reshape((n_classes, -1)) # Needs to be flat.
-    print("6 utils.py: ", type(U), U.shape, "U.reshape((n_classes, -1))", U[0][0])
+    U = U.reshape((num_classes, -1)) # Needs to be flat.
+    print("6 utils.py: ", type(U), U.shape, "U.reshape((num_classes, -1))", U[0][0])
     d.setUnaryEnergy(U)#Aca se cae cuando se hace el cambio de numero de clases. d es un objeto del tipo dcrf.DenseCRF2D
     print("7 utils.py: ", type(d), d, "d.setUnaryEnergy(U)")
     d.addPairwiseGaussian(sxy=sxy_gaussian, compat=compat_gaussian,
@@ -138,7 +139,7 @@ def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
     #print("10")
     Q = d.inference(n_iters)
     print("12 utils.py: ",type(Q), Q,"d.inference(n_iters)") 
-    preds = np.array(Q, dtype=np.float32).reshape((n_classes, h, w)).transpose(1, 2, 0)
+    preds = np.array(Q, dtype=np.float32).reshape((num_classes, h, w)).transpose(1, 2, 0)
     print("13 utils.py: ", type(preds),preds.shape, "preds", preds[0][0][0])
     print("14 utils.py: ", "n_iters=",n_iters)
     return np.expand_dims(preds, 0)

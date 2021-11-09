@@ -3,9 +3,9 @@
 
 This script evaluates the model on 1449 validation images.
 """
-print("Esta en evaluate.py")
 from __future__ import print_function
 
+print("Esta en evaluate.py")
 import argparse
 from datetime import datetime
 import os

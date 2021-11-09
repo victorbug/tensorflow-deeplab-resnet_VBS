@@ -20,7 +20,7 @@ from deeplab_resnet import DeepLabResNetModel#Esta linea gatilla que se vaya a d
 print("Esta en inference.py. 2) Va a hacer el from deeplab_resnet import ImageReader, decode_labels, dense_crf, prepare_label")
 from deeplab_resnet import ImageReader, decode_labels, dense_crf, prepare_label
 
-
+NUM_CLASSES = 21
 SAVE_DIR = './output/'
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
 
@@ -37,6 +37,8 @@ def get_arguments():
                         help="Path to the RGB image file.")
     parser.add_argument("model_weights", type=str,
                         help="Path to the file with model weights.")
+    parser.add_argument("--num-classes", type=int, default=NUM_CLASSES,
+                        help="Number of classes to predict (including background).")
     parser.add_argument("--save-dir", type=str, default=SAVE_DIR,
                         help="Where to save predicted mask.")
     return parser.parse_args()
@@ -52,6 +54,7 @@ def load(saver, sess, ckpt_path):
     ''' 
     saver.restore(sess, ckpt_path)
     print("Restored model parameters from {}".format(ckpt_path))
+    print(saver)
 
 def main():
     print("Esta en inference.py/def main")
@@ -62,7 +65,7 @@ def main():
     
     # Prepare image.
     print("2.- inference.py: Prepare image.")
-    img_orig = tf.image.decode_jpeg(tf.read_file(args.img_path), channels=3)#Es como un ndarray de dimension de: ancho pixeles x alto pixeles x 3 colores
+    img_orig = tf.image.decode_jpeg(tf.read_file(args.img_path), channels=3)#Es como un ndarray de dimension de: ancho pixeles x alto pixeles x 3 colores. Si se printea el tf.read_file(), da caracteres extranos y muy extensos en el terminal
     #Si imprimo el valor de tf.read_file(args.img_path) salen caracteres muy raros
     
     #print(tf.read_file(args.img_path))
@@ -75,19 +78,18 @@ def main():
     print("3.- inference.py: Convert RGB to BGR.")
     img_r, img_g, img_b = tf.split(split_dim=2, num_split=3, value=img_orig)#QUizas el split_dim significa que considera 2 dimensiones (ancho y alto) y en base a eso corta en 3
     img = tf.cast(tf.concat(2, [img_b, img_g, img_r]), dtype=tf.float32)#tf.cast los transforma a enteros si se usa dtype=tf.int32
-    print(img_r)
+    #print(img_r)
 
     if True:
         with tf.Session() as sess:
-            print(type(img_orig.eval()), img_orig.eval())
-            print(tf.read_file(args.img_path).eval())
-            print(img_r.eval())
-            print(tf.concat(2, [img_b, img_g, img_r]).eval())
-            print(tf.concat(0, [[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]]).eval())
-            print(img.eval())
-            print(tf.expand_dims([2,2] , dim=1).eval())#A [2,2], dim=0 lo convierte en [[2 2]]. dim=1 lo convierte en [[2][2]]
-            # Or use sess.run:
-            # result = sess.run(c)
+            print(type(img_orig.eval()), img_orig.eval().shape)
+            print(type(tf.read_file(args.img_path).eval()), "No imprimir el valor porque es muy extenso y caracteres raros")
+            print(type(img_r.eval()), img_r.eval().shape)
+            print(type(tf.concat(2, [img_b, img_g, img_r]).eval()), tf.concat(2, [img_b, img_g, img_r]).eval().shape) 
+            print("Ejemplo juguete",tf.concat(0, [[[1, 2, 3], [4, 5, 6]],[[7, 8, 9], [10, 11, 12]]]).eval())
+            print(type(img.eval()), img.eval().shape)
+            print("Ejemplo juguete", tf.expand_dims([2,2] , dim=1).eval())#A [2,2], dim=0 lo convierte en [[2 2]]. dim=1 lo convierte en [[2][2]]
+
 
     # Extract mean.
     print("4.- inference.py: Extract mean.")
@@ -95,21 +97,24 @@ def main():
     
     # Create network.
     print("5.- inference.py: Create network.")
-    net = DeepLabResNetModel({'data': tf.expand_dims(img, dim=0)}, is_training=False)#expands_dims le anade una dimension, nada muy especial, supongo que es por algo simple, como x ejemplo que la otra funcion solo recibe variables con esas dimensiones
+    net = DeepLabResNetModel({'data': tf.expand_dims(img, dim=0)}, is_training=False, num_classes=args.num_classes)#expands_dims le anade una dimension, nada muy especial, supongo que es por algo simple, como x ejemplo que la otra funcion solo recibe variables con esas dimensiones
+    print("net",type(net), net)
 
     # Which variables to load.
     print("6.- inference.py: Which variables to load.")
     restore_var = tf.global_variables()
-    #print(restore_var)
+    print("restore_var", len(restore_var), restore_var[0], "es una lista de muchas variables, mejor solo imprimir el primer elemento, no la lista completa")
 
     # Predictions.
     print("7.- inference.py: Predictions.")
-    raw_output = net.layers['fc1_voc12']
+    raw_output = net.layers['fc1_voc12']#Es objeto Tensor
     raw_output_up = tf.image.resize_bilinear(raw_output, tf.shape(img)[0:2,])
-    
-    with tf.Session() as sess2:
+
+    print(raw_output, type(raw_output), "No me deja hacerle .eval(). Dice: FailedPreconditionError (see above for traceback): Attempting to use uninitialized value bn2c_branch2a/moving_variance")
+
+    #with tf.Session() as sess2:
         #result9 = raw_output.eval()
-        print(1)
+    #    print(1)
     #print(result9)
 
     # CRF.
@@ -137,15 +142,19 @@ def main():
     
     # Perform inference.
     print("11.- inference.py: Perform inference.")
-    #print(type(pred))
+    #if True:
+    #    with tf.Session() as sess2:
+    #        print(type(pred.eval()))
     #print(pred)
 
     #with tf.Session() as sess:
     #    print(pred.eval())
 
     preds = sess.run(pred)#Aca se cae si le cambio el numero de clases
+    print("preds (ojo las dimensiones tienen que ver con los pixeles de la imagen (los valores del medio del vector de 4 elementos))", type(preds), preds.shape, preds[0].shape, preds[0][0].shape, preds[0][0][0].shape, preds[0][0][0][0].shape, preds[0][0][0][0].shape)
+    print(preds[0][0][0][0], preds[0][0][0], "Printear preds[0][0], ya deja un vector muy largo")
 
-    msk = decode_labels(preds)
+    msk = decode_labels(preds, num_classes=args.num_classes)
     im = Image.fromarray(msk[0])
 
     if not os.path.exists(args.save_dir):

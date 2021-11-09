@@ -18,7 +18,7 @@ import numpy as np
 
 from deeplab_resnet import DeepLabResNetModel, ImageReader, decode_labels, inv_preprocess, prepare_label
 
-n_classes = 21
+#n_classes = 21
 
 BATCH_SIZE = 4
 DATA_DIRECTORY = './VOCdevkit/VOC2012/'
@@ -26,11 +26,12 @@ DATA_LIST_PATH = './dataset/train.txt'
 INPUT_SIZE = '321,321'
 LEARNING_RATE = 1e-4
 NUM_STEPS = 10#El original es 20000
+#RESTORE_FROM = './deeplab_resnet.ckpt'
 RESTORE_FROM = './deeplab_resnet.ckpt'
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 100
 SNAPSHOT_DIR = './snapshots/'
-
+NUM_CLASSES = 21
 
 def get_arguments():
     print("Esta en train.py/def get_arguments")
@@ -52,6 +53,8 @@ def get_arguments():
                         help="Whether to updates the running means and variances during the training.")
     parser.add_argument("--learning-rate", type=float, default=LEARNING_RATE,
                         help="Learning rate for training.")
+    parser.add_argument("--num-classes", type=int, default=NUM_CLASSES,
+                        help="Number of classes to predict (including background).")
     parser.add_argument("--num-steps", type=int, default=NUM_STEPS,
                         help="Number of training steps.")
     parser.add_argument("--random-scale", action="store_true",
@@ -68,6 +71,7 @@ def get_arguments():
 
 def save(saver, sess, logdir, step):
     print("Esta en train.py/def get_arguments")
+    print(logdir)
     model_name = 'model.ckpt'
     checkpoint_path = os.path.join(logdir, model_name)
     
@@ -111,7 +115,7 @@ def main():
         image_batch, label_batch = reader.dequeue(args.batch_size)
     
     # Create network.
-    net = DeepLabResNetModel({'data': image_batch}, is_training=args.is_training)
+    net = DeepLabResNetModel({'data': image_batch}, is_training=args.is_training, num_classes=args.num_classes)
     # For a small batch size, it is better to keep 
     # the statistics of the BN layers (running means and variances)
     # frozen, and to not update the values provided by the pre-trained model. 
@@ -127,9 +131,9 @@ def main():
     trainable = tf.trainable_variables()
     
     
-    prediction = tf.reshape(raw_output, [-1, n_classes])
-    label_proc = prepare_label(label_batch, tf.pack(raw_output.get_shape()[1:3]))
-    gt = tf.reshape(label_proc, [-1, n_classes])
+    prediction = tf.reshape(raw_output, [-1, args.num_classes])
+    label_proc = prepare_label(label_batch, tf.pack(raw_output.get_shape()[1:3]), num_classes=args.num_classes)
+    gt = tf.reshape(label_proc, [-1, args.num_classes])
     
     # Pixel-wise softmax loss.
     loss = tf.nn.softmax_cross_entropy_with_logits(prediction, gt)
@@ -142,8 +146,8 @@ def main():
     
     # Image summary.
     images_summary = tf.py_func(inv_preprocess, [image_batch, args.save_num_images], tf.uint8)
-    labels_summary = tf.py_func(decode_labels, [label_batch, args.save_num_images], tf.uint8)
-    preds_summary = tf.py_func(decode_labels, [pred, args.save_num_images], tf.uint8)
+    labels_summary = tf.py_func(decode_labels, [label_batch, args.save_num_images, args.num_classes], tf.uint8)
+    preds_summary = tf.py_func(decode_labels, [pred, args.save_num_images, args.num_classes], tf.uint8)
     
     total_summary = tf.summary.image('images', 
                                      tf.concat(2, [images_summary, labels_summary, preds_summary]), 

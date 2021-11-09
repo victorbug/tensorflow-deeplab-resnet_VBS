@@ -36,7 +36,7 @@ def layer(op):
 class Network(object):
     print("Esta en kaffe/tensorflow/network.py/Class Network")
 
-    def __init__(self, inputs, trainable=True, is_training=False):
+    def __init__(self, inputs, trainable=True, is_training=False, num_classes=21):
         print("Esta en kaffe/tensorflow/network.py/Class Network/def __init__")
         # The input nodes for this network
         self.inputs = inputs
@@ -50,7 +50,7 @@ class Network(object):
         self.use_dropout = tf.placeholder_with_default(tf.constant(1.0),
                                                        shape=[],
                                                        name='use_dropout')
-        self.setup(is_training)
+        self.setup(is_training, num_classes)
 
     def setup(self, is_training):
         print("Esta en kaffe/tensorflow/network.py/Class Network/def setup")
