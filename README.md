@@ -110,7 +110,7 @@ Descargar el kit original de VOC2012 desde su sitio web oficial: (http://host.ro
 
 Train (1464 images) y Validation (1449 imagenes): http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
 
-Test (1456 images): http://host.robots.ox.ac.uk:8080/eval/downloads/VOC2012test.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk:8080/, el cual se encuentra en este sitio http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
+Test (1456 images)(1.8GB): http://host.robots.ox.ac.uk:8080/eval/downloads/VOC2012test.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk:8080/, el cual se encuentra en este sitio http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
 
 Alternativa. Si por cualquier cosa está caido el sitio original: Descargar el kit de imágenes y anotaciones (Annotations, CSV_Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject)(Aunque creo que son útiles solo las carpetas: ImageSets, JPEGImages, SegmentationClass, SegmentationObject) desde: https://www.kaggle.com/lyuxinshuai/vocdevkit
 
