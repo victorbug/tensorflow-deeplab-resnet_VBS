@@ -118,7 +118,7 @@ def main():
     #print(result9)
 
     # CRF.
-    print("8.- inference.py: CRF.")
+    print("8.- inference.py: CRF.")#crear un raw_output_up que sea nulo creo que es sinonimo de independizar el bloque CRF de lo anterior
     raw_output_up = tf.nn.softmax(raw_output_up)    
     raw_output_up = tf.py_func(dense_crf, [raw_output_up, tf.expand_dims(img_orig, dim=0)], tf.float32)
     

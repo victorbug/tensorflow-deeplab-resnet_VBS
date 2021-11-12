@@ -55,6 +55,8 @@ class DeepLabResNetModel(Network):#Extiende clase Network
              .conv(1, 1, 256, 1, 1, biased=False, relu=False, name='res2a_branch1')
              .batch_normalization(is_training=is_training, activation_fn=None, name='bn2a_branch1'))
 
+            #Stage1-Inicio
+            #1
             (self.feed('pool1')
                  .conv(1, 1, 64, 1, 1, biased=False, relu=False, name='res2a_branch2a')
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn2a_branch2a')
@@ -62,7 +64,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn2a_branch2b')
                  .conv(1, 1, 256, 1, 1, biased=False, relu=False, name='res2a_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn2a_branch2c'))
-
+            #2
             (self.feed('bn2a_branch1', 
                        'bn2a_branch2c')
                  .add(name='res2a')
@@ -73,7 +75,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn2b_branch2b')
                  .conv(1, 1, 256, 1, 1, biased=False, relu=False, name='res2b_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn2b_branch2c'))
-
+            #3
             (self.feed('res2a_relu', 
                        'bn2b_branch2c')
                  .add(name='res2b')
@@ -84,14 +86,17 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn2c_branch2b')
                  .conv(1, 1, 256, 1, 1, biased=False, relu=False, name='res2c_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn2c_branch2c'))
-
+            #Stage1-Fin
+            
             (self.feed('res2b_relu', 
                        'bn2c_branch2c')
                  .add(name='res2c')
                  .relu(name='res2c_relu')
                  .conv(1, 1, 512, 2, 2, biased=False, relu=False, name='res3a_branch1')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn3a_branch1'))
-
+            
+            #Stage2-Inicio
+            #1
             (self.feed('res2c_relu')
                  .conv(1, 1, 128, 2, 2, biased=False, relu=False, name='res3a_branch2a')
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn3a_branch2a')
@@ -99,7 +104,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn3a_branch2b')
                  .conv(1, 1, 512, 1, 1, biased=False, relu=False, name='res3a_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn3a_branch2c'))
-
+            #2
             (self.feed('bn3a_branch1', 
                        'bn3a_branch2c')
                  .add(name='res3a')
@@ -110,7 +115,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn3b1_branch2b')
                  .conv(1, 1, 512, 1, 1, biased=False, relu=False, name='res3b1_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn3b1_branch2c'))
-
+            #3
             (self.feed('res3a_relu', 
                        'bn3b1_branch2c')
                  .add(name='res3b1')
@@ -121,7 +126,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn3b2_branch2b')
                  .conv(1, 1, 512, 1, 1, biased=False, relu=False, name='res3b2_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn3b2_branch2c'))
-
+            #4
             (self.feed('res3b1_relu', 
                        'bn3b2_branch2c')
                  .add(name='res3b2')
@@ -132,7 +137,8 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn3b3_branch2b')
                  .conv(1, 1, 512, 1, 1, biased=False, relu=False, name='res3b3_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn3b3_branch2c'))
-
+            #Stage2-Fin
+            
             (self.feed('res3b2_relu', 
                        'bn3b3_branch2c')
                  .add(name='res3b3')
@@ -140,6 +146,8 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4a_branch1')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4a_branch1'))
 
+            #Stage3-Inicio
+            #1
             (self.feed('res3b3_relu')
                  .conv(1, 1, 256, 1, 1, biased=False, relu=False, name='res4a_branch2a')
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4a_branch2a')
@@ -147,7 +155,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4a_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4a_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4a_branch2c'))
-
+            #2
             (self.feed('bn4a_branch1', 
                        'bn4a_branch2c')
                  .add(name='res4a')
@@ -158,7 +166,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4b1_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4b1_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4b1_branch2c'))
-
+            #3
             (self.feed('res4a_relu', 
                        'bn4b1_branch2c')
                  .add(name='res4b1')
@@ -169,7 +177,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4b2_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4b2_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4b2_branch2c'))
-
+            #4
             (self.feed('res4b1_relu', 
                        'bn4b2_branch2c')
                  .add(name='res4b2')
@@ -180,7 +188,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4b3_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4b3_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4b3_branch2c'))
-
+            #5
             (self.feed('res4b2_relu', 
                        'bn4b3_branch2c')
                  .add(name='res4b3')
@@ -191,7 +199,7 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4b4_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4b4_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4b4_branch2c'))
-
+            #6
             (self.feed('res4b3_relu', 
                        'bn4b4_branch2c')
                  .add(name='res4b4')
@@ -202,6 +210,8 @@ class DeepLabResNetModel(Network):#Extiende clase Network
                  .batch_normalization(is_training=is_training, activation_fn=tf.nn.relu, name='bn4b5_branch2b')
                  .conv(1, 1, 1024, 1, 1, biased=False, relu=False, name='res4b5_branch2c')
                  .batch_normalization(is_training=is_training, activation_fn=None, name='bn4b5_branch2c'))
+
+            #Stage3-Fin
 
             (self.feed('res4b4_relu', 
                        'bn4b5_branch2c')

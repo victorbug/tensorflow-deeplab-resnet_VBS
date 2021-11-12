@@ -19,7 +19,7 @@ label_colours = [(0,0,0)
 # image mean
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)    
 
-def decode_labels(mask, num_images=1, num_classes=21):
+def decode_labels(mask, num_images=1, num_classes=3):
     print("Esta en deeplab_resnet/utils.py/def decode_labels")
     """Decode batch of segmentation masks.
     
@@ -43,7 +43,7 @@ def decode_labels(mask, num_images=1, num_classes=21):
       outputs[i] = np.array(img)
     return outputs
 
-def prepare_label(input_batch, new_size, num_classes):
+def prepare_label(input_batch, new_size, num_classes=3):
     print("Esta en deeplab_resnet/utils.py/def prepare_label")
     """Resize masks and perform one-hot encoding.
 
@@ -88,7 +88,7 @@ def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
               srgb_bilateral=(13, 13, 13),
               kernel_bilateral=dcrf.DIAG_KERNEL,
               normalisation_bilateral=dcrf.NORMALIZE_SYMMETRIC,
-              num_classes=21):
+              num_classes=3):
     print("Esta en deeplab_resnet/utils.py/def dense_crf")
     """DenseCRF over unnormalised predictions.
        More details on the arguments at https://github.com/lucasb-eyer/pydensecrf.
@@ -118,8 +118,9 @@ def dense_crf(probs, img=None, n_iters=10, #Ojo originalmente es, n_iters=10
     #print("DenseCRFVICTOR")
     d = dcrf.DenseCRF2D(w, h, num_classes) # Define DenseCRF model.
     print("4 utils.py:", type(d), d, "dcrf.DenseCRF2D(w, h, num_classes)")
-    U = -np.log(probs)+100*probs # Unary potential.
+    U = -np.log(probs)#+100*probs # Unary potential.
     #U = -np.log(probs)+100*probs # Unary potential.
+    print("4 utils.py, U:", type(U),U.shape,U)
     print("5 utils.py: ", type(U),U.shape, "-np.log(probs)", U[0][0][0], -np.log(probs[0][0][0])+100*probs[0][0][0])
     U = U.reshape((num_classes, -1)) # Needs to be flat.
     print("6 utils.py: ", type(U), U.shape, "U.reshape((num_classes, -1))", U[0][0])
