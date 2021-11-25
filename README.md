@@ -108,7 +108,7 @@ At the moment, the post-processing step with CRF is not implemented. Besides tha
 
 Descargar el kit original de VOC2012 desde su sitio web oficial: (http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html):
 
-Train (1464 images) y Validation (1449 imagenes): http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)(descomprimir en la carpeta: tensorflow-deeplab-resnet_VBS/)
+Train (1464 images) y Validation (1449 imagenes): http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html) (descomprimir en la carpeta: tensorflow-deeplab-resnet_VBS/)
 
 Test (1456 images)(1.8GB): http://host.robots.ox.ac.uk:8080/eval/downloads/VOC2012test.tar (El link anterior se encuentra en este sitio: http://host.robots.ox.ac.uk:8080/, el cual se encuentra en este sitio http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
 
