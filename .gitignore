@@ -6,3 +6,6 @@ VOCdevkit/VOC2012/CSV_Annotations/
 VOCdevkit/VOC2012/JPEGImages/
 VOCdevkit/VOC2012/SegmentationClassAug/
 VOCdevkit/VOC2012/SegmentationObject/
+utilsVIC/AsignarPaletaEnMasa/OutputTIFF2Secuencial/RawSecuencial/
+utilsVIC/AsignarPaletaEnMasa/OutputTIFF2Secuencial/AnotacionSecuencial/
+utilsVIC/EmbryoDataset/TiffsOriginales/
